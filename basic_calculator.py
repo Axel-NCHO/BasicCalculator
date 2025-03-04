@@ -50,19 +50,22 @@ class ExpressionParser:
         if token is None:
             raise ValueError("Unexpected end of expression")
 
-        if token == '-':
+        found_a_dot: bool = False
+        if token.isnumeric() or token == "-" or token == "." or token == "+":  # Direct number
+            if token == ".":
+                token = "0."
+                found_a_dot = True
             self.__advance()
             next_token = self.__current_token()
-            while next_token and next_token.isnumeric():
-                token += next_token
-                self.__advance()
-                next_token = self.__current_token()
-            return BinaryTree(int(token))
-
-        if token.isnumeric():  # Direct number
-            self.__advance()
-            next_token = self.__current_token()
+            if token == "-" and next_token == "-":
+                raise ValueError("Badly formatted number")
+            if token == "*" and next_token == "-":
+                raise ValueError("Badly formatted number")
             while next_token and (next_token.isnumeric() or next_token == '.'):
+                if next_token == '.':
+                    if found_a_dot:
+                        raise ValueError("Badly formatted number")
+                    found_a_dot = True
                 token += next_token
                 self.__advance()
                 next_token = self.__current_token()
