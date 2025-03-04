@@ -50,6 +50,15 @@ class ExpressionParser:
         if token is None:
             raise ValueError("Unexpected end of expression")
 
+        if token == '-':
+            self.__advance()
+            next_token = self.__current_token()
+            while next_token and next_token.isnumeric():
+                token += next_token
+                self.__advance()
+                next_token = self.__current_token()
+            return BinaryTree(int(token))
+
         if token.isnumeric():  # Direct number
             self.__advance()
             next_token = self.__current_token()
@@ -114,7 +123,7 @@ class ExpressionParser:
 def evaluate_tree(eval_tree: BinaryTree):
     if eval_tree.is_leaf():
         val: str = eval_tree.val
-        return float(val) if '.' in val else int(val)
+        return float(val) if '.' in str(val) else int(val)
     eval_left: int|float = evaluate_tree(eval_tree.left)
     eval_right: int|float = evaluate_tree(eval_tree.right)
     match eval_tree.val:
