@@ -53,7 +53,7 @@ class ExpressionParser:
         if token.isnumeric():  # Direct number
             self.__advance()
             next_token = self.__current_token()
-            while next_token and next_token.isnumeric():
+            while next_token and (next_token.isnumeric() or next_token == '.'):
                 token += next_token
                 self.__advance()
                 next_token = self.__current_token()
